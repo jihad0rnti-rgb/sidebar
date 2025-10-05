@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar with Language Toggle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body.rtl {
+            direction: rtl;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        body.rtl .sidebar {
+            left: auto;
+            right: 0;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 0;
+        }
+
+        .sidebar ul li {
+            position: relative;
+        }
+
+        .sidebar ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .sidebar ul li a:hover {
+            transform: translateX(0);
+        }
+
+        body.rtl .sidebar ul li a:hover {
+            transform: translateX(0);
+        }
+
+        /* Social Media Colors */
+        .sidebar ul li a.facebook { background: #3b5998; }
+        .sidebar ul li a.twitter { background: #1da1f2; }
+        .sidebar ul li a.instagram { background: #e1306c; }
+        .sidebar ul li a.linkedin { background: #0077b5; }
+        .sidebar ul li a.github { background: #333; }
+        .sidebar ul li a.youtube { background: #ff0000; }
+
+        /* Tooltip */
+        .social-name {
+                position: absolute;
+                top: 50%;
+                display: flex;
+                align-items: center;
+                left: 100%;
+                transform: translateY(-50%);
+                background: white;
+                color: #333;
+                padding: 8px 16px;
+                font-size: 14px;
+                font-weight: bold;
+                white-space: nowrap;
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.3s ease;
+                height: 100%;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+                z-index: 10;
+        }
+
+        body.rtl .social-name {
+            left: auto;
+            right: 100%;
+        }
+
+        .sidebar ul li a:hover .social-name {
+            opacity: 1;
+            left: 100%;
+        }
+
+        body.rtl .sidebar ul li a:hover .social-name {
+            right: 100%;
+            left: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            background: #f5f6fa;
+        }
+
+        body.rtl .main-content {
+            margin-left: 0;
+            margin-right: 250px;
+        }
+
+        /* Language Toggle Button */
+        .lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        body.rtl .lang-toggle {
+            right: auto;
+            left: 20px;
+        }
+
+        .lang-toggle:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .lang-toggle:active {
+            transform: translateY(0);
+        }
+
+        /* Content Styles */
+        .content-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Toggle Button -->
+    <button class="lang-toggle" onclick="toggleLanguage()">
+        <span id="langText">العربية</span>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2 id="sidebarTitle">Menu</h2>
+        <ul id="menuList">
+            <li><a href="#" class="facebook" id="menu1"><i class="fab fa-facebook-f"></i><span class="social-name" id="name1">FACEBOOK</span></a></li>
+            <li><a href="#" class="twitter" id="menu2"><i class="fab fa-twitter"></i><span class="social-name" id="name2">TWITTER</span></a></li>
+            <li><a href="#" class="instagram" id="menu3"><i class="fab fa-instagram"></i><span class="social-name" id="name3">INSTAGRAM</span></a></li>
+            <li><a href="#" class="linkedin" id="menu4"><i class="fab fa-linkedin-in"></i><span class="social-name" id="name4">LINKEDIN</span></a></li>
+            <li><a href="#" class="github" id="menu5"><i class="fab fa-github"></i><span class="social-name" id="name5">GITHUB</span></a></li>
+            <li><a href="#" class="youtube"><i class="fab fa-youtube"></i><span class="social-name">YOUTUBE</span></a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <h1 id="mainTitle">Welcome to Our Website</h1>
+            
+            <div class="card">
+                <h3 id="card1Title">About This Page</h3>
+                <p id="card1Text">This is a demonstration of a sidebar that switches position based on the selected language. Click the language toggle button in the top right corner to switch between English and Arabic layouts.</p>
+            </div>
+
+            <div class="card">
+                <h3 id="card2Title">Features</h3>
+                <p id="card2Text">The sidebar automatically moves from left to right when switching to Arabic (RTL layout), and the entire page direction adjusts accordingly. This provides a better user experience for Arabic-speaking users.</p>
+            </div>
+
+            <div class="card">
+                <h3 id="card3Title">Responsive Design</h3>
+                <p id="card3Text">The layout uses smooth transitions to create a seamless experience when switching between languages. All elements are properly aligned and maintain their functionality in both language modes.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isArabic = false;
+
+        const translations = {
+            en: {
+                langButton: 'العربية',
+                sidebarTitle: 'Social Media',
+                name1: 'FACEBOOK',
+                name2: 'TWITTER',
+                name3: 'INSTAGRAM',
+                name4: 'LINKEDIN',
+                name5: 'GITHUB',
+                mainTitle: 'Welcome to Our Website',
+                card1Title: 'About This Page',
+                card1Text: 'This is a demonstration of a sidebar that switches position based on the selected language. Click the language toggle button in the top right corner to switch between English and Arabic layouts.',
+                card2Title: 'Features',
+                card2Text: 'The sidebar automatically moves from left to right when switching to Arabic (RTL layout), and the entire page direction adjusts accordingly. This provides a better user experience for Arabic-speaking users.',
+                card3Title: 'Responsive Design',
+                card3Text: 'The layout uses smooth transitions to create a seamless experience when switching between languages. All elements are properly aligned and maintain their functionality in both language modes.'
+            },
+            ar: {
+                langButton: 'English',
+                sidebarTitle: 'وسائل التواصل',
+                name1: 'فيسبوك',
+                name2: 'تويتر',
+                name3: 'انستجرام',
+                name4: 'لينكد إن',
+                name5: 'جيت هاب',
+                mainTitle: 'مرحباً بك في موقعنا',
+                card1Title: 'عن هذه الصفحة',
+                card1Text: 'هذا عرض توضيحي للشريط الجانبي الذي يتغير موضعه بناءً على اللغة المختارة. انقر على زر تبديل اللغة في الزاوية العلوية لتبديل بين التخطيطات الإنجليزية والعربية.',
+                card2Title: 'المميزات',
+                card2Text: 'ينتقل الشريط الجانبي تلقائياً من اليسار إلى اليمين عند التبديل إلى اللغة العربية، ويتم ضبط اتجاه الصفحة بأكملها وفقاً لذلك. وهذا يوفر تجربة مستخدم أفضل للمستخدمين الناطقين بالعربية.',
+                card3Title: 'تصميم متجاوب',
+                card3Text: 'يستخدم التخطيط انتقالات سلسة لإنشاء تجربة سلسة عند التبديل بين اللغات. جميع العناصر محاذاة بشكل صحيح وتحافظ على وظائفها في كلا وضعي اللغة.'
+            }
+        };
+
+        function toggleLanguage() {
+            isArabic = !isArabic;
+            const lang = isArabic ? 'ar' : 'en';
+            const t = translations[lang];
+
+            // Toggle RTL class
+            document.body.classList.toggle('rtl', isArabic);
+
+            // Update text content
+            document.getElementById('langText').textContent = t.langButton;
+            document.getElementById('sidebarTitle').textContent = t.sidebarTitle;
+            document.getElementById('name1').textContent = t.name1;
+            document.getElementById('name2').textContent = t.name2;
+            document.getElementById('name3').textContent = t.name3;
+            document.getElementById('name4').textContent = t.name4;
+            document.getElementById('name5').textContent = t.name5;
+            document.getElementById('mainTitle').textContent = t.mainTitle;
+            document.getElementById('card1Title').textContent = t.card1Title;
+            document.getElementById('card1Text').textContent = t.card1Text;
+            document.getElementById('card2Title').textContent = t.card2Title;
+            document.getElementById('card2Text').textContent = t.card2Text;
+            document.getElementById('card3Title').textContent = t.card3Title;
+            document.getElementById('card3Text').textContent = t.card3Text;
+
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+        }
+    </script>
+</body>
+</html>
